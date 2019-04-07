@@ -13,7 +13,15 @@
 #include "header.h"
 
 int main(void) {
-	int val = hash("gjdh");
-	printf("int hash val: %d", val); /* prints !!!Hello World!!! */
+	TUPLELIST_CSG csg;
+	csg->next = NULL;
+	//csg->next = NULL;
+	//printf("TESTING");
+	if(csg != NULL && csg->next == NULL)
+		printf("IS NULL");
+
+	//if the tuple is equal to the 
+//printf("IS NOT");
+	//printf("%s\n");
 	return EXIT_SUCCESS;
 }

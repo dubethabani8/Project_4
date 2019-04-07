@@ -53,6 +53,13 @@ TUPLELIST_CR next;
 };
 typedef TUPLELIST_CR HASHTABLE_CR[197];
 
+//DATABASE
+HASHTABLE_CSG TABLE_CSG;
+HASHTABLE_SNAP TABLE_SNAP;
+HASHTABLE_CP TABLE_CP;
+HASHTABLE_CDH TABLE_CDH;
+HASHTABLE_CR TABLE_CR;
+
 //Hashing function
 int hash(char * string);
 int string_int(char s[30]); //Function that returns sum of char values of string
@@ -93,11 +100,15 @@ void insert_CSG(char Course[6], char StudentId[8], char Grade[2]){
 
 int lookup_CSG(char Course[6], char StudentId[8], char Grade[2]){ //Key is Course-Student
 	//No stars in key comps - get key and search that bucket.
-	if(strcmp("*", Course == 0) && )
-	//If one of the comps is *, then search all the buckets
+	if(strcmp("*", Course) != 0 && strcmp("*", StudentId) != 0){
 	char * key = strcat(Course, StudentId);
 	int index = hash(key);
-
+	TUPLELIST_CSG csg = TABLE_CSG[index];
+	/*while((strcmp(csg->Course, Course) != 0 && strcmp(csg->StudentId, StudentId) != 0 && strcmp(csg->Grade, Grade) != 0) && csg != NULL){
+		csg = csg->next;
+	}*/
+	}
+	else {}  //If one of the comps is *, then search all the buckets
 }
 
 int hash(char * string){
