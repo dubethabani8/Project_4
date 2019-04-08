@@ -60,8 +60,8 @@ HASHTABLE_CP TABLE_CP;
 HASHTABLE_CDH TABLE_CDH;
 HASHTABLE_CR TABLE_CR;
 
-//Hashing function
-int hash(char * string);
+
+int hash(char * key); //function that returns the index of the key
 int string_int(char s[30]); //Function that returns sum of char values of string
 //insert functions
 void insert_CSG(char Course[6], char StudentId[8], char Grade[2]);
@@ -85,6 +85,7 @@ int lookup_CDH(char Course[6], char Day[2], char Hour[4]);
 int lookup_CR(char Course[6], char Room[20]);
 
 void insert_CSG(char Course[6], char StudentId[8], char Grade[2]){
+	//Make csg struct and insert if not already there
 	TUPLELIST_CSG csg;
 	if(strcmp(Course, "*") == 0)
 		strcpy(csg->Course,"");
@@ -99,24 +100,25 @@ void insert_CSG(char Course[6], char StudentId[8], char Grade[2]){
 }
 
 int lookup_CSG(char Course[6], char StudentId[8], char Grade[2]){ //Key is Course-Student
-	//No stars in key comps - get key and search that bucket.
+	//No stars in key components - get key and search that bucket for the tuple
 	if(strcmp("*", Course) != 0 && strcmp("*", StudentId) != 0){
 	char * key = strcat(Course, StudentId);
 	int index = hash(key);
 	TUPLELIST_CSG csg = TABLE_CSG[index];
-	/*while((strcmp(csg->Course, Course) != 0 && strcmp(csg->StudentId, StudentId) != 0 && strcmp(csg->Grade, Grade) != 0) && csg != NULL){
-		csg = csg->next;
-	}*/
+	//If csg == NULL, return 0, else
+		//while tuple is not found in bucket and csg->next is not NULL: search that linked list for csg with matching values
+		//return accordingly
 	}
-	else {}  //If one of the comps is *, then search all the buckets
+	else {}  //If one of the components making up the key is *, then search all the buckets //Could use secondary indexing??
+
 }
 
-int hash(char * string){
-	int key = string_int(string);
-	return key % 197;
+int hash(char * key){ //function that 
+	int index = string_int(key);
+	return index % 197;
 }
 
-int string_int(char * string){
+int string_int(char * string){ //Function that returns sum of chars in string
 	int len = strlen(string);
 	int sum;
 	for(int i=0; i<len; i++)
