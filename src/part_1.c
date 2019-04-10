@@ -17,10 +17,10 @@ typedef TUPLELIST_CSG HASHTABLE_CSG[197];
 //(StudentId-Name-Address-Phone)
 typedef struct TUPLE_SNAP *TUPLELIST_SNAP;
 struct TUPLE_SNAP {
-char StudentId[8];
-char Name[30];
-char Address[50];
-char Phone[8];
+char * StudentId;
+char * Name;
+char * Address;
+char * Phone;
 TUPLELIST_SNAP next;
 };
 typedef TUPLELIST_SNAP HASHTABLE_SNAP[197];
@@ -28,8 +28,8 @@ typedef TUPLELIST_SNAP HASHTABLE_SNAP[197];
 //(Course-Prerequisite)
 typedef struct TUPLE_CP *TUPLELIST_CP;
 struct TUPLE_CP {
-char Course[6];
-char Prerequisite[6];
+char * Course;
+char * Prerequisite;
 TUPLELIST_CP next;
 };
 typedef TUPLELIST_CP HASHTABLE_CP[197];
@@ -37,9 +37,9 @@ typedef TUPLELIST_CP HASHTABLE_CP[197];
 //(Course-Day-Hour)
 typedef struct TUPLE_CDH *TUPLELIST_CDH;
 struct TUPLE_CDH {
-char Course[6];
-char Day[2];
-char Hour[4];
+char * Course;
+char * Day;
+char * Hour;
 TUPLELIST_CDH next;
 };
 typedef TUPLELIST_CDH HASHTABLE_CDH[197];
@@ -47,8 +47,8 @@ typedef TUPLELIST_CDH HASHTABLE_CDH[197];
 //(Course-Room)
 typedef struct TUPLE_CR *TUPLELIST_CR;
 struct TUPLE_CR {
-char Course[6];
-char Room[20];
+char * Course;
+char * Room;
 TUPLELIST_CR next;
 };
 typedef TUPLELIST_CR HASHTABLE_CR[197];
@@ -65,24 +65,26 @@ int hash(char * key); //function that returns the index of the key
 int string_int(char s[30]); //Function that returns sum of char values of string
 //insert functions
 void insert_CSG(char * Course, char * StudentId, char * Grade);
-void insert_SNAP(char StudentId[8], char Name[30], char Address[50], char Phone[8]);
-void insert_CP(char Course[6], char Prerequisite[6]);
-void insert_CDH(char Course[6], char Day[2], char Hour[4]);
-void insert_CR(char Course[6], char Room[20]);
+void insert_SNAP(char * StudentId, char * Name, char * Address, char * Phone);
+void insert_CP(char * Course, char * Prerequisite);
+void insert_CDH(char * Course, char * Day, char * Hour);
+void insert_CR(char * Course, char * Room);
 
 //delete functions
-void delete_CSG(char Course[6], char StudentId[8], char Grade[2]);
-void delete_SNAP(char StudentId[8], char Name[30], char Address[50], char Phone[8]);
-void delete_CP(char Course[6], char Prerequisite[6]);
-void delete_CDH(char Course[6], char Day[2], char Hour[4]);
-void delete_CR(char Course[6], char Room[20]);
+void delete_CSG(char * Course, char * StudentId, char * Grade);
+void delete_SNAP(char * StudentId, char * Name, char * Address, char * Phone);
+void delete_CP(char * Course, char * Prerequisite);
+void delete_CDH(char * Course, char * Day, char * Hour);
+void delete_CR(char * Course, char * Room);
 
 //lookup functions
 int lookup_CSG(char * Course, char * StudentId, char * Grade);
-int lookup_SNAP(char StudentId[8], char Name[30], char Address[50], char Phone[8]);
-int lookup_CP(char Course[6], char Prerequisite[6]);
-int lookup_CDH(char Course[6], char Day[2], char Hour[4]);
-int lookup_CR(char Course[6], char Room[20]);
+int lookup_SNAP(char * StudentId, char * Name, char * Address, char * Phone);
+int lookup_CP(char * Course, char * Prerequisite);
+int lookup_CDH(char * Course, char * Day, char * Hour);
+int lookup_CR(char * Course, char * Room);
+
+TUPLELIST_CSG newCSG(char * Course, char * StudentId, char * Grade);
 
 void toString_CSG(TUPLELIST_CSG csg);
 
@@ -92,6 +94,21 @@ void insert_CSG(char * Course, char * StudentId, char * Grade){
 	int present = lookup_CSG(Course, StudentId, Grade);
 	if(!present){
 		//insert into hashtable
+		TUPLELIST_CSG csg = newCSG(Course,StudentId,Grade);
+
+			char key[strlen(csg->Course)];
+			strcpy(key, csg->Course);
+			strcat(key, csg->StudentId);
+			int index = hash(key);
+			TUPLELIST_CSG current = TABLE_CSG[index];
+			if(current == NULL) {
+				printf("Inserted at index %d | key is %s\n", index, key);
+				TABLE_CSG[index] = csg;}
+			else {
+				while(current->next != NULL)
+					current = current->next;
+				current->next = csg;
+			}
 	}
 	else return;
 }
@@ -103,6 +120,7 @@ int lookup_CSG(char * Course, char * StudentId, char * Grade){ //Key is Course-S
 	strcpy(key, Course);
 	strcat(key, StudentId);
 	int index = hash(key);
+	printf("Looking up %d | key is %s\n", index, key);
 	TUPLELIST_CSG csg = TABLE_CSG[index];
 	if(csg == NULL) return 0;
 	else {
@@ -146,14 +164,42 @@ int string_int(char * string){ //Function that returns sum of chars in string
 }
 
 TUPLELIST_CSG newCSG(char * Course, char * StudentId, char * Grade){ //Create new CSG tuple
+	char * C;
+		if(strcmp(Course, "*") == 0){
+			C = (char*) malloc(sizeof(char));
+			strcpy(C, "");
+		} 
+		else {
+			C = (char*) malloc(strlen(Course) * sizeof(char));
+			strcpy(C, Course);
+		}
+		char * S;
+		if(strcmp(StudentId, "*") == 0){
+			S = (char*) malloc(sizeof(char));
+			strcpy(S, "");
+		} 
+		else {
+			S = (char*) malloc(strlen(StudentId) * sizeof(char));
+			strcpy(S, StudentId);
+		}
+		char * G;
+		if(strcmp(Grade, "*") == 0){
+			G = (char*) malloc(sizeof(char));
+			strcpy(G, "");
+		} 
+		else {
+			G = (char*) malloc(strlen(Grade) * sizeof(char));
+			strcpy(G, Grade);
+		}
+
 	TUPLELIST_CSG csg;
 	csg = (struct TUPLE_CSG *) malloc(sizeof(struct TUPLE_CSG));
-	csg->Course = (char*) malloc(strlen(Course)* sizeof(char));
-	csg->StudentId = (char*) malloc(strlen(StudentId)* sizeof(char));
-	csg->Grade = (char*) malloc((strlen(Grade))* sizeof(char));
-	strcpy(csg->Course, Course);
-	strcpy(csg->StudentId, StudentId);
-	strcpy(csg->Grade, Grade);
+	csg->Course = (char*) malloc(strlen(C)* sizeof(char));
+	csg->StudentId = (char*) malloc(strlen(S)* sizeof(char));
+	csg->Grade = (char*) malloc((strlen(G))* sizeof(char));
+	strcpy(csg->Course, C);
+	strcpy(csg->StudentId, S);
+	strcpy(csg->Grade, G);
 	csg->next = NULL;
 	return csg;
 }
