@@ -20,7 +20,11 @@ int main(void) {
 
 	//TABLE_CSG[73] = csgT;
 
-	printf("LOOKUP RESULT: %d\n", lookup_CSG("CSC173", "30849952", "A"));
+	printf("LOOKUP RESULT: %d\n", lookup_CSG("CSC173", "30849952", "*"));
+
+	delete_CSG("CSC173", "30849952", "*");
+
+	printf("LOOKUP RESULT AFTER DEL: %d\n", lookup_CSG("CSC173", "30849952", "*"));
 
 	return EXIT_SUCCESS;
 }

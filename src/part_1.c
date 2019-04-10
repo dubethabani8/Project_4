@@ -63,6 +63,7 @@ HASHTABLE_CR TABLE_CR;
 
 int hash(char * key); //function that returns the index of the key
 int string_int(char s[30]); //Function that returns sum of char values of string
+int lastLookupIndex = 0; //Used in delete fuctions. Reinitialized at beginning of delete by calling lookup
 //insert functions
 void insert_CSG(char * Course, char * StudentId, char * Grade);
 void insert_SNAP(char * StudentId, char * Name, char * Address, char * Phone);
@@ -102,7 +103,7 @@ void insert_CSG(char * Course, char * StudentId, char * Grade){
 			int index = hash(key);
 			TUPLELIST_CSG current = TABLE_CSG[index];
 			if(current == NULL) {
-				printf("Inserted at index %d | key is %s\n", index, key);
+				printf("Inserting at %d\n", index );
 				TABLE_CSG[index] = csg;}
 			else {
 				while(current->next != NULL)
@@ -120,12 +121,14 @@ int lookup_CSG(char * Course, char * StudentId, char * Grade){ //Key is Course-S
 	strcpy(key, Course);
 	strcat(key, StudentId);
 	int index = hash(key);
-	printf("Looking up %d | key is %s\n", index, key);
+	printf("Looking up at %d\n", index );
 	TUPLELIST_CSG csg = TABLE_CSG[index];
 	if(csg == NULL) return 0;
 	else {
 		while(csg != NULL){
-			if(strcmp(csg->Grade, Grade) == 0) return 1;
+			if(strcmp(csg->Grade, Grade) == 0 || strcmp(Grade, "*") == 0) {
+				lastLookupIndex = index;
+				return 1;}
 			else csg = csg->next;
 		}
 		return 0;
@@ -139,8 +142,10 @@ int lookup_CSG(char * Course, char * StudentId, char * Grade){ //Key is Course-S
 				while(csg != NULL){
 					if((strcmp(csg->Course, Course) == 0 || strcmp(Course, "*") == 0)&&
 					(strcmp(csg->StudentId, StudentId) == 0 || strcmp(StudentId, "*") == 0) &&
-					(strcmp(csg->Grade, Grade) == 0 || strcmp(Grade, "*") == 0))
+					(strcmp(csg->Grade, Grade) == 0 || strcmp(Grade, "*") == 0)){
+						lastLookupIndex = i;
 					return 1;
+			}
 				else csg = csg->next;
 				}
 				return 0;
@@ -150,6 +155,25 @@ int lookup_CSG(char * Course, char * StudentId, char * Grade){ //Key is Course-S
 
 }
 
+void delete_CSG(char * Course, char * StudentId, char * Grade){
+	int present = lookup_CSG(Course,StudentId,Grade);
+	if(!present) return;
+	else{
+		TUPLELIST_CSG csg = TABLE_CSG[lastLookupIndex];
+		while(csg != NULL){
+			printf("HERE\n");
+			if((strcmp(csg->Course, Course) == 0 || strcmp(Course, "*") == 0)&&
+					(strcmp(csg->StudentId, StudentId) == 0 || strcmp(StudentId, "*") == 0) &&
+					(strcmp(csg->Grade, Grade) == 0 || strcmp(Grade, "*") == 0)){
+					csg->next = NULL; //Potential memory fee needed??
+					return;
+		}
+		csg = csg->next;
+
+	}
+}
+}
+
 int hash(char * key){ //function that returns the index of the key
 	int index = string_int(key);
 	return index % 197;
@@ -157,7 +181,7 @@ int hash(char * key){ //function that returns the index of the key
 
 int string_int(char * string){ //Function that returns sum of chars in string
 	int len = strlen(string);
-	int sum;
+	int sum = 0;
 	for(int i=0; i<len; i++)
 		sum += string[i];
 	return sum;
