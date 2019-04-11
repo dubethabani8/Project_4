@@ -159,20 +159,22 @@ void delete_CSG(char * Course, char * StudentId, char * Grade){
 	int present = lookup_CSG(Course,StudentId,Grade);
 	if(!present) return;
 	else{
-		TUPLELIST_CSG csg = TABLE_CSG[lastLookupIndex];
-		while(csg != NULL){
+		TUPLELIST_CSG * csgPtr = &(TABLE_CSG[lastLookupIndex]);
+		while((*csgPtr) != NULL){
 			printf("HERE\n");
-			if((strcmp(csg->Course, Course) == 0 || strcmp(Course, "*") == 0)&&
-					(strcmp(csg->StudentId, StudentId) == 0 || strcmp(StudentId, "*") == 0) &&
-					(strcmp(csg->Grade, Grade) == 0 || strcmp(Grade, "*") == 0)){
-					csg->next = NULL; //Potential memory fee needed??
+			if((strcmp((*csgPtr)->Course, Course) == 0 || strcmp(Course, "*") == 0)&&
+					(strcmp((*csgPtr)->StudentId, StudentId) == 0 || strcmp(StudentId, "*") == 0) &&
+					(strcmp((*csgPtr)->Grade, Grade) == 0 || strcmp(Grade, "*") == 0)){
+					(*csgPtr) = NULL; //Potential memory fee needed??
 					return;
 		}
-		csg = csg->next;
+		csgPtr = &((*csgPtr)->next);
 
 	}
 }
 }
+
+
 
 int hash(char * key){ //function that returns the index of the key
 	int index = string_int(key);
@@ -227,6 +229,7 @@ TUPLELIST_CSG newCSG(char * Course, char * StudentId, char * Grade){ //Create ne
 	csg->next = NULL;
 	return csg;
 }
+
 
 void toString_CSG(TUPLELIST_CSG csg){ //print CSG tuple
 	printf("|Course: %s | StudentId: %s | Grade: %s|\n", csg->Course, csg->StudentId, csg->Grade);
