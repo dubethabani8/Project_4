@@ -13,18 +13,18 @@
 #include "header.h"
 
 int main(void) {
-	TUPLELIST_CSG csgT = newCSG("CSC173", "30849952", "A");
-	TUPLELIST_CSG csgN = newCSG("CSC173", "30849952", "B");
-	csgT->next = csgN;
-	insert_CSG("CSC173", "30849952", "A");
-	insert_CSG("CSC173", "30849952", "B");
-	//TABLE_CSG[73] = csgT;
+	TUPLELIST_SNAP snapT = newSNAP("30849952", "Thabani", "CMC", "5855128303");
+	TUPLELIST_SNAP snapN = newSNAP("30849952", "Thabani", "CMC", "5855128303");
+	snapT->next = snapN;
+	insert_SNAP("30849952", "Thabani", "CMC", "5855128303");
+	insert_CR("CSC172", "Hoyt");
+	//TABLE_SNAP[73] = snapT;
 
-	printf("LOOKUP RESULT: %d\n", lookup_CSG("CSC173", "30849952", "B"));
+	printf("LOOKUP RESULT: %d\n", lookup_CR("CSC172", "Hoyt"));
 
-	delete_CSG("CSC173", "*", "B");
+	delete_CR("CSC172","Hoyt");
 
-	printf("LOOKUP RESULT AFTER DEL: %d\n", lookup_CSG("CSC173", "30849952", "B"));
+	printf("LOOKUP RESULT AFTER DEL: %d\n", lookup_CR("CSC172", "Hoyt"));
 
 	return EXIT_SUCCESS;
 }
