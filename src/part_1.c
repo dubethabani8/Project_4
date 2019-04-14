@@ -93,11 +93,22 @@ TUPLELIST_CP newCP(char * Course, char * Prerequisite);
 TUPLELIST_CDH newCDH(char * Course, char * Day, char * Hour);
 TUPLELIST_CR newCR(char * Course, char * Room);
 
+//to string of a tuple
 void toString_CSG(TUPLELIST_CSG csg);
 void toString_SNAP(TUPLELIST_SNAP snap);
 void toString_CP(TUPLELIST_CP cp);
 void toString_CDH(TUPLELIST_CDH cdh);
 void toString_CR(TUPLELIST_CR cr);
+
+void insertALL(); //insert all as for question 3
+void printDatabase(); //print all tables in database
+
+//print relation table
+void printCSG();
+void printSNAP();
+void printCP();
+void printCDH();
+void printCR();
 
 void insert_CSG(char * Course, char * StudentId, char * Grade){
 	//Make csg struct and insert if not already there
@@ -112,7 +123,6 @@ void insert_CSG(char * Course, char * StudentId, char * Grade){
 			int index = hash(key);
 			TUPLELIST_CSG current = TABLE_CSG[index];
 			if(current == NULL) {
-				printf("Inserting at %d\n", index );
 				TABLE_CSG[index] = csg;}
 			else {
 				while(current->next != NULL)
@@ -219,7 +229,6 @@ int lookup_CSG(char * Course, char * StudentId, char * Grade){ //Key is Course-S
 	strcpy(key, Course);
 	strcat(key, StudentId);
 	int index = hash(key);
-	printf("Looking up at %d\n", index );
 	TUPLELIST_CSG csg = TABLE_CSG[index];
 	if(csg == NULL) return 0;
 	else {
@@ -699,23 +708,23 @@ TUPLELIST_CR newCR(char * Course, char * Room){ //Create new CSG tuple
 }
 
 void toString_CSG(TUPLELIST_CSG csg){ //print CSG tuple
-	printf("|Course: %s | StudentId: %s | Grade: %s|\n", csg->Course, csg->StudentId, csg->Grade);
+	printf("%s      %s          %s  \n", csg->Course, csg->StudentId, csg->Grade);
 }
 
 void toString_SNAP(TUPLELIST_SNAP snap){ //print CSG tuple
-	printf("|StudentId: %s | Name: %s | Address: %s | Phone: %s |\n", snap->StudentId, snap->Name, snap->Address, snap->Phone);
+	printf("%-20s %-20s %-20s %-20s  \n", snap->StudentId, snap->Name, snap->Address, snap->Phone);
 }
 
 void toString_CP(TUPLELIST_CP cp){ //print CSG tuple
-	printf("|Course: %s | Prerequisite: %s |\n", cp->Course, cp->Prerequisite);
+	printf("%s       %s\n", cp->Course, cp->Prerequisite);
 }
 
 void toString_CDH(TUPLELIST_CDH cdh){ //print CSG tuple
-	printf("|Course: %s | Day: %s | Hour: %s|\n", cdh->Course, cdh->Day, cdh->Hour);
+	printf("%-8s %-4s %-4s\n", cdh->Course, cdh->Day, cdh->Hour);
 }
 
 void toString_CR(TUPLELIST_CR cr){ //print CSG tuple
-	printf("|Course: %s | Room: %s |\n", cr->Course, cr->Room);
+	printf("%s       %s\n", cr->Course, cr->Room);
 }
 
 int hash(char * key){ //function that returns the index of the key
@@ -729,4 +738,127 @@ int string_int(char * string){ //Function that returns sum of chars in string
 	for(int i=0; i<len; i++)
 		sum += string[i];
 	return sum;
+}
+
+void insertALL(){
+	//CSG
+	insert_CSG("CS101", "12345", "A");
+	insert_CSG("CS101", "67890", "B");
+	insert_CSG("EE200", "12345", "C");
+	insert_CSG("EE200", "22222", "B+");
+	insert_CSG("CS101", "33333", "A-");
+	insert_CSG("PH100", "67890", "C+");
+
+	//SNAP
+	insert_SNAP("12345", "C. Brown", "12 Apple St.", "555-1234");
+	insert_SNAP("67890", "L. Van Pelt", "34 Pear Ave.", "555-5678");
+	insert_SNAP("22222", "P. Patty", "56 Grape Blvd.", "555-9999");
+
+	//CP
+	insert_CP("CS101", "CS100");
+	insert_CP("EE200", "EE005");
+	insert_CP("EE200", "CS100");
+	insert_CP("CS120", "CS101");
+	insert_CP("CS121", "CS120");
+	insert_CP("CS205", "CS101");
+	insert_CP("CS206", "CS121");
+	insert_CP("CS206", "CS205");
+
+	//CDH
+	insert_CDH("CS101", "M", "9AM");
+	insert_CDH("CS101", "W", "9AM");
+	insert_CDH("CS101", "F", "9AM");
+	insert_CDH("EE200", "Tu", "10AM");
+	insert_CDH("EE200", "W", "1PM");
+	insert_CDH("EE200", "Th", "10AM");
+
+	//CR
+	insert_CR("CS101", "Turing Aud.");
+	insert_CR("EE200", "25 Ohm Hall");
+	insert_CR("PH100", "Newton Lab.");
+
+}
+
+void printDatabase(){
+	printCSG();
+	printSNAP();
+	printCP();
+	printCDH();
+	printCR();
+}
+
+void printCSG(){
+	printf("Course     StudentId      Grade\n");
+		for(int i=0; i<197; i++){
+		TUPLELIST_CSG csg = TABLE_CSG[i];
+		if(csg == NULL) continue;
+		else{
+			while(csg != NULL){
+				toString_CSG(csg);
+				csg = csg->next;
+			}
+		}
+	}
+	printf("\n");
+}
+
+void printSNAP(){
+	printf("StudentId            Name                  Address              Phone\n");
+		for(int i=0; i<197; i++){
+		TUPLELIST_SNAP snap = TABLE_SNAP[i];
+		if(snap == NULL) continue;
+		else{
+			while(snap != NULL){
+				toString_SNAP(snap);
+				snap = snap->next;
+			}
+		}
+	}
+	printf("\n");
+}
+
+void printCP(){
+	printf("Course      Prerequisite\n");
+		for(int i=0; i<197; i++){
+		TUPLELIST_CP cp = TABLE_CP[i];
+		if(cp == NULL) continue;
+		else{
+			while(cp != NULL){
+				toString_CP(cp);
+				cp = cp->next;
+			}
+		}
+	}
+	printf("\n");
+}
+
+void printCDH(){
+		printf("Course   Day  Hour\n");
+		for(int i=0; i<197; i++){
+		TUPLELIST_CDH cdh = TABLE_CDH[i];
+		if(cdh == NULL) continue;
+		else{
+			while(cdh != NULL){
+				toString_CDH(cdh);
+				cdh = cdh->next;
+			}
+		}
+	}
+	printf("\n");
+
+}
+
+void printCR(){
+	printf("Course      Room\n");
+		for(int i=0; i<197; i++){
+		TUPLELIST_CR cr = TABLE_CR[i];
+		if(cr == NULL) continue;
+		else{
+			while(cr != NULL){
+				toString_CR(cr);
+				cr = cr->next;
+			}
+		}
+	}
+	printf("\n");
 }
