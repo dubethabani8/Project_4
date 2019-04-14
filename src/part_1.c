@@ -301,7 +301,7 @@ int lookup_SNAP(char * StudentId, char * Name, char * Address, char * Phone){
 	int index = hash(key);
 	TUPLELIST_SNAP snap = TABLE_SNAP[index];
 	if(snap == NULL) return 0;
-	else { ////////////////////////////////////////////////////////////////-----------------///
+	else {
 		while(snap != NULL){
 			if((strcmp(snap->Name, Name) == 0 || strcmp(Name, "*") == 0) &&
 				(strcmp(snap->Address, Address) == 0 || strcmp(Address, "*") == 0) &&
@@ -376,7 +376,7 @@ int lookup_CP(char * Course, char * Prerequisite){
 }
 
 int lookup_CR(char * Course, char * Room){
-		//If possible, get key and search that bucket for the tuple quickly
+	//If possible, get key and search that bucket for the tuple quickly
 	if(strcmp("*", Course) != 0 && strcmp("*", Room) != 0){
 	char key[strlen(Course)];
 	strcpy(key, Course);
