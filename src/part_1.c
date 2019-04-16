@@ -61,9 +61,6 @@ HASHTABLE_CDH TABLE_CDH;
 HASHTABLE_CR TABLE_CR;
 
 
-int hash(char * key); //function that returns the index of the key
-int string_int(char s[30]); //Function that returns sum of char values of string
-int lastLookupIndex = 0; //Used in delete fuctions. Reinitialized at beginning of delete by calling lookup
 //insert functions
 void insert_CSG(char * Course, char * StudentId, char * Grade);
 void insert_SNAP(char * StudentId, char * Name, char * Address, char * Phone);
@@ -109,6 +106,16 @@ void printSNAP();
 void printCP();
 void printCDH();
 void printCR();
+
+int hash(char * key); //function that returns the index of the key
+int string_int(char s[30]); //Function that returns sum of char values of string
+int lastLookupIndex = 0; //Used in delete fuctions. Reinitialized at beginning of delete by calling lookup
+TUPLELIST_CSG last_csg[5];
+TUPLELIST_SNAP last_snap[5];
+TUPLELIST_CP last_cp[5];
+TUPLELIST_CDH last_cdh[5];
+TUPLELIST_CR last_cr[5];
+int j = 0;
 
 void insert_CSG(char * Course, char * StudentId, char * Grade){
 	//Make csg struct and insert if not already there
@@ -223,6 +230,8 @@ void insert_CR(char * Course, char * Room){
 }
 
 int lookup_CSG(char * Course, char * StudentId, char * Grade){ //Key is Course-Student
+	int found = 0;
+	j = 0;
 	//If possible, get key and search that bucket for the tuple quickly
 	if(strcmp("*", Course) != 0 && strcmp("*", StudentId) != 0){
 	char key[strlen(Course)];
@@ -233,12 +242,20 @@ int lookup_CSG(char * Course, char * StudentId, char * Grade){ //Key is Course-S
 	if(csg == NULL) return 0;
 	else {
 		while(csg != NULL){
-			if(strcmp(csg->Grade, Grade) == 0 || strcmp(Grade, "*") == 0) {
+			if((strcmp(csg->Grade, Grade) == 0 || strcmp(Grade, "*") == 0) &&
+				(strcmp(csg->StudentId, StudentId) == 0 || strcmp(StudentId, "*") == 0) &&
+				(strcmp(csg->Course, Course) == 0 || strcmp(Course, "*") == 0)
+				) {
+				found = 1;
 				lastLookupIndex = index;
-				return 1;}
+				last_csg[j] = csg;
+				j++;
+				toString_CSG(csg);
+				csg = csg->next;
+			}
 			else csg = csg->next;
 		}
-		return 0;
+		return found;
 	}
 	}
 	else { //Search all buckets if key cannot be used. Could use secondary indexing???
@@ -250,19 +267,25 @@ int lookup_CSG(char * Course, char * StudentId, char * Grade){ //Key is Course-S
 					if((strcmp(csg->Course, Course) == 0 || strcmp(Course, "*") == 0)&&
 					(strcmp(csg->StudentId, StudentId) == 0 || strcmp(StudentId, "*") == 0) &&
 					(strcmp(csg->Grade, Grade) == 0 || strcmp(Grade, "*") == 0)){
-						lastLookupIndex = i;
-					return 1;
+					lastLookupIndex = i;
+					last_csg[j] = csg;
+					j++;
+					found = 1;
+					toString_CSG(csg);
+					csg = csg->next;
 			}
 				else csg = csg->next;
 				}
-				return 0;
 			}
 		}
-	}  
+	}
 
+	return found;
 }
 
-int lookup_CDH(char * Course, char * Day, char * Hour){ 
+int lookup_CDH(char * Course, char * Day, char * Hour){
+	int found = 0;
+	j = 0;
 	//If possible, get key and search that bucket for the tuple quickly
 	if(strcmp("*", Course) != 0 && strcmp("*", Day) != 0){
 	char key[strlen(Course)];
@@ -273,12 +296,20 @@ int lookup_CDH(char * Course, char * Day, char * Hour){
 	if(cdh == NULL) return 0;
 	else {
 		while(cdh != NULL){
-			if(strcmp(cdh->Hour, Hour) == 0 || strcmp(Hour, "*") == 0) {
+			if((strcmp(cdh->Hour, Hour) == 0 || strcmp(Hour, "*") == 0) &&
+				(strcmp(cdh->Course, Course) == 0 || strcmp(Course, "*") == 0)&&
+					(strcmp(cdh->Day, Day) == 0 || strcmp(Day, "*") == 0)
+				) {
+				found = 1;
 				lastLookupIndex = index;
-				return 1;}
+				last_cdh[j] = cdh;
+				j++;
+				toString_CDH(cdh);
+				cdh = cdh->next;
+			}
 			else cdh = cdh->next;
 		}
-		return 0;
+		return found;
 	}
 	}
 	else { //Search all buckets if key cannot be used. Could use secondary indexing???
@@ -291,18 +322,23 @@ int lookup_CDH(char * Course, char * Day, char * Hour){
 					(strcmp(cdh->Day, Day) == 0 || strcmp(Day, "*") == 0) &&
 					(strcmp(cdh->Hour, Hour) == 0 || strcmp(Hour, "*") == 0)){
 						lastLookupIndex = i;
-					return 1;
+						found = 1;
+						last_cdh[j] = cdh;
+						j++;
+						toString_CDH(cdh);
+						cdh = cdh->next;
 			}
 				else cdh = cdh->next;
 				}
-				return 0;
 			}
 		}
-	}  
-
+	}
+	return found;
 }
 
 int lookup_SNAP(char * StudentId, char * Name, char * Address, char * Phone){
+	int found = 0;
+	j = 0;
 		//If possible, get key and search that bucket for the tuple quickly
 	if(strcmp("*", StudentId) != 0){
 	char key[strlen(StudentId)];
@@ -316,11 +352,16 @@ int lookup_SNAP(char * StudentId, char * Name, char * Address, char * Phone){
 				(strcmp(snap->Address, Address) == 0 || strcmp(Address, "*") == 0) &&
 				(strcmp(snap->Phone, Phone) == 0 || strcmp(Phone, "*") == 0)
 				) {
+				found = 1;
 				lastLookupIndex = index;
-				return 1;}
+				last_snap[j] = snap;
+				j++;
+				toString_SNAP(snap);
+				snap = snap->next;
+			}
 			else snap = snap->next;
 		}
-		return 0;
+		return found;
 	}
 	}
 	else { //Search all buckets if key cannot be used. Could use secondary indexing???
@@ -334,17 +375,23 @@ int lookup_SNAP(char * StudentId, char * Name, char * Address, char * Phone){
 					(strcmp(snap->Address, Address) == 0 || strcmp(Address, "*") == 0) &&
 					(strcmp(snap->Phone, Phone) == 0 || strcmp(Phone, "*") == 0)){
 						lastLookupIndex = i;
-					return 1;
+						found = 1;
+						toString_SNAP(snap);
+						last_snap[j] = snap;
+						j++;
+						snap = snap->next;
 			}
 				else snap = snap->next;
 				}
-				return 0;
 			}
 		}
 	}
+	return found;
 }
 
 int lookup_CP(char * Course, char * Prerequisite){
+	int found;
+	j = 0;
 		//If possible, get key and search that bucket for the tuple quickly
 	if(strcmp("*", Course) != 0 && strcmp("*", Prerequisite) != 0){
 	char key[strlen(Course)];
@@ -358,11 +405,16 @@ int lookup_CP(char * Course, char * Prerequisite){
 			if((strcmp(cp->Course, Course) == 0 || strcmp(Course, "*") == 0) &&
 				(strcmp(cp->Prerequisite, Prerequisite) == 0 || strcmp(Prerequisite, "*") == 0)
 				) {
+				found = 1;
 				lastLookupIndex = index;
-				return 1;}
+				last_cp[j] = cp;
+				j++;
+				toString_CP(cp);
+				cp = cp->next;
+			}
 			else cp = cp->next;
 		}
-		return 0;
+		return found;
 	}
 	}
 	else { //Search all buckets if key cannot be used. Could use secondary indexing???
@@ -374,17 +426,23 @@ int lookup_CP(char * Course, char * Prerequisite){
 					if((strcmp(cp->Course, Course) == 0 || strcmp(Course, "*") == 0) &&
 					(strcmp(cp->Prerequisite, Prerequisite) == 0 || strcmp(Prerequisite, "*") == 0)){
 						lastLookupIndex = i;
-					return 1;
+						found = 1;
+						last_cp[j] = cp;
+						j++;
+						toString_CP(cp);
+						cp = cp->next;
 			}
 				else cp = cp->next;
 				}
-				return 0;
 			}
 		}
 	}
+	return found;
 }
 
 int lookup_CR(char * Course, char * Room){
+	int found = 0;
+	j = 0;
 	//If possible, get key and search that bucket for the tuple quickly
 	if(strcmp("*", Course) != 0 && strcmp("*", Room) != 0){
 	char key[strlen(Course)];
@@ -392,6 +450,7 @@ int lookup_CR(char * Course, char * Room){
 	strcat(key, Room);
 	int index = hash(key);
 	TUPLELIST_CR cr = TABLE_CR[index];
+	
 	if(cr == NULL) return 0;
 	else {
 		while(cr != NULL){
@@ -399,116 +458,193 @@ int lookup_CR(char * Course, char * Room){
 				(strcmp(cr->Room, Room) == 0 || strcmp(Room, "*") == 0)
 				) {
 				lastLookupIndex = index;
-				return 1;}
+				last_cr[j] = cr;
+				j++;
+				toString_CR(cr);
+				cr = cr->next;
+				found = 1;
+			}
 			else cr = cr->next;
 		}
-		return 0;
+		return found;
 	}
 	}
 	else { //Search all buckets if key cannot be used. Could use secondary indexing???
+
 		for(int i=0; i<197; i++){
 			TUPLELIST_CR cr = TABLE_CR[i];
 			if(cr == NULL) continue;
 			else{
 				while(cr != NULL){
+					//printf("HERE!!! Current cr is: \n");
+					//toString_CR(cr);
 					if((strcmp(cr->Course, Course) == 0 || strcmp(Course, "*") == 0) &&
 					(strcmp(cr->Room, Room) == 0 || strcmp(Room, "*") == 0)){
 						lastLookupIndex = i;
-					return 1;
+						last_cr[j] = cr;
+						j++;
+						toString_CR(cr);
+						cr = cr->next;
+						found = 1;
 			}
 				else cr = cr->next;
 				}
-				return 0;
+				
 			}
 		}
 	}
+	return found;
 }
 
 void delete_CSG(char * Course, char * StudentId, char * Grade){
+	printf("Deleting the following: \n");
 	int present = lookup_CSG(Course,StudentId,Grade);
 	if(!present) return;
 	else{
 		TUPLELIST_CSG * csgPtr = &(TABLE_CSG[lastLookupIndex]);
+		TUPLELIST_CSG * csgPtrPrev;
 		while((*csgPtr) != NULL){
-			printf("HERE\n");
 			if((strcmp((*csgPtr)->Course, Course) == 0 || strcmp(Course, "*") == 0)&&
 					(strcmp((*csgPtr)->StudentId, StudentId) == 0 || strcmp(StudentId, "*") == 0) &&
 					(strcmp((*csgPtr)->Grade, Grade) == 0 || strcmp(Grade, "*") == 0)){
-					(*csgPtr) = NULL; //Potential memory fee needed??
-					return;
-		}
-		csgPtr = &((*csgPtr)->next);
+					if((*csgPtr) == TABLE_CSG[lastLookupIndex]){
+						TABLE_CSG[lastLookupIndex] = (*csgPtr)->next;
+						(*csgPtr) = NULL;
+						csgPtr = &(TABLE_CSG[lastLookupIndex]);
+					}
+					else{
 
+					//(*crPtr) = NULL; //Potential memory fee needed??
+					csgPtr = &((*csgPtr)->next); //POTENTIAL MEMORY LEAK??
+					(*csgPtrPrev)->next = (*csgPtr);
+					}
+		}
+		else{
+			csgPtrPrev = csgPtr;
+			csgPtr = &((*csgPtr)->next);
+		}
 	}
 }
 }
 
 void delete_SNAP(char * StudentId, char * Name, char * Address, char * Phone){
+	printf("Deleting the following: \n");
 	int present = lookup_SNAP(StudentId,Name,Address,Phone);
 	if(!present) return;
 	else{
 		TUPLELIST_SNAP * snapPtr = &(TABLE_SNAP[lastLookupIndex]);
+		TUPLELIST_SNAP * snapPtrPrev;
 		while((*snapPtr) != NULL){
 			if((strcmp((*snapPtr)->StudentId, StudentId) == 0 || strcmp(StudentId, "*") == 0)&&
 					(strcmp((*snapPtr)->Name, Name) == 0 || strcmp(Name, "*") == 0) &&
 					(strcmp((*snapPtr)->Address, Address) == 0 || strcmp(Address, "*") == 0)){
-					(*snapPtr) = NULL; //Potential memory fee needed??
-					return;
-		}
-		snapPtr = &((*snapPtr)->next);
+					if((*snapPtr) == TABLE_SNAP[lastLookupIndex]){
+						TABLE_SNAP[lastLookupIndex] = (*snapPtr)->next;
+						(*snapPtr) = NULL;
+						snapPtr = &(TABLE_SNAP[lastLookupIndex]);
+					}
+					else{
 
+					//(*crPtr) = NULL; //Potential memory fee needed??
+					snapPtr = &((*snapPtr)->next); //POTENTIAL MEMORY LEAK??
+					(*snapPtrPrev)->next = (*snapPtr);
+					}
+		}
+		else{
+			snapPtrPrev = snapPtr;
+			snapPtr = &((*snapPtr)->next);
+		}
 	}
 }
 }
 
 void delete_CP(char * Course, char * Prerequisite){
+	printf("Deleting the following: \n");
 	int present = lookup_CP(Course, Prerequisite);
 	if(!present) return;
 	else{
 		TUPLELIST_CP * cpPtr = &(TABLE_CP[lastLookupIndex]);
+		TUPLELIST_CP * cpPtrPrev;
 		while((*cpPtr) != NULL){
 			if((strcmp((*cpPtr)->Course, Course) == 0 || strcmp(Course, "*") == 0)&&
 					(strcmp((*cpPtr)->Prerequisite, Prerequisite) == 0 || strcmp(Prerequisite, "*") == 0)){
-					(*cpPtr) = NULL; //Potential memory fee needed??
-					return;
-		}
-		cpPtr = &((*cpPtr)->next);
+					if((*cpPtr) == TABLE_CP[lastLookupIndex]){
+						TABLE_CP[lastLookupIndex] = (*cpPtr)->next;
+						(*cpPtr) = NULL;
+						cpPtr = &(TABLE_CP[lastLookupIndex]);
+					}
+					else{
 
+					//(*crPtr) = NULL; //Potential memory fee needed??
+					cpPtr = &((*cpPtr)->next); //POTENTIAL MEMORY LEAK??
+					(*cpPtrPrev)->next = (*cpPtr);
+					}
+		}
+		else{
+			cpPtrPrev = cpPtr;
+			cpPtr = &((*cpPtr)->next);
+		}
 	}
 }
 }
 
 void delete_CDH(char * Course, char * Day, char * Hour){
+	printf("Deleting the following: \n");
 	int present = lookup_CDH(Course,Day,Hour);
 	if(!present) return;
 	else{
 		TUPLELIST_CDH * cdhPtr = &(TABLE_CDH[lastLookupIndex]);
+		TUPLELIST_CDH * cdhPtrPrev;
 		while((*cdhPtr) != NULL){
 			if((strcmp((*cdhPtr)->Course, Course) == 0 || strcmp(Course, "*") == 0)&&
 					(strcmp((*cdhPtr)->Day, Day) == 0 || strcmp(Day, "*") == 0) &&
 					(strcmp((*cdhPtr)->Hour, Hour) == 0 || strcmp(Hour, "*") == 0)){
-					(*cdhPtr) = NULL; //Potential memory fee needed??
-					return;
-		}
-		cdhPtr = &((*cdhPtr)->next);
+					if((*cdhPtr) == TABLE_CDH[lastLookupIndex]){
+						TABLE_CDH[lastLookupIndex] = (*cdhPtr)->next;
+						(*cdhPtr) = NULL;
+						cdhPtr = &(TABLE_CDH[lastLookupIndex]);
+					}
+					else{
 
+					//(*crPtr) = NULL; //Potential memory fee needed??
+					cdhPtr = &((*cdhPtr)->next); //POTENTIAL MEMORY LEAK??
+					(*cdhPtrPrev)->next = (*cdhPtr);
+					}
+		}
+		else{
+			cdhPtrPrev = cdhPtr;
+			cdhPtr = &((*cdhPtr)->next);
+		}
 	}
 }
 }
 
 void delete_CR(char * Course, char * Room){
+	printf("Deleting the following: \n");
 	int present = lookup_CR(Course, Room);
 	if(!present) return;
 	else{
 		TUPLELIST_CR * crPtr = &(TABLE_CR[lastLookupIndex]);
+		TUPLELIST_CR * crPtrPrev;
 		while((*crPtr) != NULL){
 			if((strcmp((*crPtr)->Course, Course) == 0 || strcmp(Course, "*") == 0)&&
 					(strcmp((*crPtr)->Room, Room) == 0 || strcmp(Room, "*") == 0)){
-					(*crPtr) = NULL; //Potential memory fee needed??
-					return;
-		}
-		crPtr = &((*crPtr)->next);
+					if((*crPtr) == TABLE_CR[lastLookupIndex]){
+						TABLE_CR[lastLookupIndex] = (*crPtr)->next;
+						(*crPtr) = NULL;
+						crPtr = &(TABLE_CR[lastLookupIndex]);
+					}
+					else{
 
+					//(*crPtr) = NULL; //Potential memory fee needed??
+					crPtr = &((*crPtr)->next); //POTENTIAL MEMORY LEAK??
+					(*crPtrPrev)->next = (*crPtr);
+					}
+		}
+		else{
+			crPtrPrev = crPtr;
+			crPtr = &((*crPtr)->next);
+		}
 	}
 }
 }
