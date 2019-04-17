@@ -10,5 +10,6 @@
 #include <String.h>
 #include "part_1.c"
 #include "part_2.c"
+#include "part_3.c"
 
 #endif /* HEADER_H_ */

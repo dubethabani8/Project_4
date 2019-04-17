@@ -52,9 +52,26 @@ int main(void) {
 	printf("Clearing the database (see source code reinitialization of tables) \n");
 	printf("READING FROM SAME DATABASE FILE:\nBELOW IS THE READ DATABASE: \n\n");
 
+	printf("REINSERTING EVERYTHING\nProcessing...\n");
+	insertALL(); //Reinsert all for next Parts
+	printf("REINSERTION COMPLETE\n");
+
 	printf("\n\n                --------------PART 2 -----------\n\n");
 	query1();
 	query2();
 
+	printf("\n\n                --------------PART 3 -----------\n\n");
+
+	printf("Example 8.12: Selection: select Course =\"CS101\" (CSG)\n");
+	select_CSG("CS101");
+	printf("Example 8.13: Projection: Projecting the above tuples on StudentId \n");
+	project_S();
+	printf("Result:\n");
+	printS();
+	printf("Example 8.14: Join: Joining relations CR and CDH on Course \nProcessing...\n");
+	join_CR_CDH();
+	printf("Result: \n");
+	printCRDH();
+	allThree();
 	return EXIT_SUCCESS;
 }

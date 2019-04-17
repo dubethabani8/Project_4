@@ -114,7 +114,7 @@ TUPLELIST_CSG last_csg[5];
 TUPLELIST_SNAP last_snap[5];
 TUPLELIST_CP last_cp[5];
 TUPLELIST_CDH last_cdh[5];
-TUPLELIST_CR last_cr[5];
+TUPLELIST_CR last_cr[20];
 int j = 0;
 
 void insert_CSG(char * Course, char * StudentId, char * Grade){
