@@ -13,7 +13,7 @@
 #include "header.h"
 
 int main(void) {
-	printf("                --------------PART 1 -----------\n\n");
+	printf("\n\n\n                --------------PART 1 -----------\n\n");
 	printf("             INSERTING ALL DATA FROM FIGURES INTO DATABASE\n\n");
 	insertALL();
 	printf("              RESULTING DATABASE:\n\n");
@@ -43,8 +43,9 @@ int main(void) {
 	printf("(d) Perfoming insert(\"CS205\", \"CS101\"), Course-Prerequisite)\n");
 	printf("CP tuples BEFORE insertion: \n");
 	printCP();
+	printf("Processing insertion...\n");
 	insert_CP("CS205", "CS101");
-	printf("Remaining CP tuples AFTER insertion: \n");
+	printf("\nRemaining CP tuples AFTER insertion: \n");
 	printCP();
 
 	printf("DEMONSTRATING READ/WRITE TO FILE: \n");
@@ -52,9 +53,9 @@ int main(void) {
 	printf("Clearing the database (see source code reinitialization of tables) \n");
 	printf("READING FROM SAME DATABASE FILE:\nBELOW IS THE READ DATABASE: \n\n");
 
-	printf("REINSERTING EVERYTHING\nProcessing...\n");
+	printf("---------- RE-INSERTING EVERYTHING-------\nProcessing...\n");
 	insertALL(); //Reinsert all for next Parts
-	printf("REINSERTION COMPLETE\n");
+	printf("\n---------RE-INSERTION COMPLETE---------\n\n");
 
 	printf("\n\n                --------------PART 2 -----------\n\n");
 	query1();
@@ -63,15 +64,21 @@ int main(void) {
 	printf("\n\n                --------------PART 3 -----------\n\n");
 
 	printf("Example 8.12: Selection: select Course =\"CS101\" (CSG)\n");
+	printf("\nResult: \n");
 	select_CSG("CS101");
-	printf("Example 8.13: Projection: Projecting the above tuples on StudentId \n");
+	printf("\nExample 8.13: Projection: Projecting the above tuples on StudentId \n");
 	project_S();
-	printf("Result:\n");
+	printf("\nResult:\n");
 	printS();
 	printf("Example 8.14: Join: Joining relations CR and CDH on Course \nProcessing...\n");
 	join_CR_CDH();
-	printf("Result: \n");
+	printf("\nResult: \n");
 	printCRDH();
+	printf("Example 8.14: All three: project Day,Hour (select Room = \"Turing Aud.\" (CR join CDH)) \nProcessing...\n");
 	allThree();
+	printf("\nResult: \n");
+	printDH();
+
+	printf("-------------END OF PROJECT-----------\n");
 	return EXIT_SUCCESS;
 }

@@ -110,10 +110,10 @@ void printCR();
 int hash(char * key); //function that returns the index of the key
 int string_int(char s[30]); //Function that returns sum of char values of string
 int lastLookupIndex = 0; //Used in delete fuctions. Reinitialized at beginning of delete by calling lookup
-TUPLELIST_CSG last_csg[5];
-TUPLELIST_SNAP last_snap[5];
-TUPLELIST_CP last_cp[5];
-TUPLELIST_CDH last_cdh[5];
+TUPLELIST_CSG last_csg[20];
+TUPLELIST_SNAP last_snap[20];
+TUPLELIST_CP last_cp[20];
+TUPLELIST_CDH last_cdh[20];
 TUPLELIST_CR last_cr[20];
 int j = 0;
 

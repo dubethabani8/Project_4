@@ -53,6 +53,7 @@ int lookup_DH(char * Day, char * Hour);
 
 void printS();
 void printCRDH();
+void printDH();
 
 void toString_S(TUPLELIST_S s);
 void toString_CRDH(TUPLELIST_CRDH crdh);
@@ -72,7 +73,7 @@ void select_CSG(char * Course){
 }
 
 void project_S(){
-	for(int i=0; i<15; i++){
+	for(int i=0; i<20; i++){
 		if(last_csg[i] != NULL)
 			insert_S(last_csg[i]->StudentId);
 	}
@@ -81,12 +82,10 @@ void project_S(){
 void allThree(){
 	int valid = lookup_CRDH("*","Turing Aud.","*","*");
 	if(valid){
-			for(int i=0; i<15; i++){
-		if(last_crdh[i] != NULL){
-			insert_DH(last_crdh[i]->Day, last_crdh[i]->Hour);
-		toString_CRDH(last_crdh[i]);
-	}
-	}
+		for(int i=0; i<20; i++){
+			if(last_crdh[i] != NULL)
+				insert_DH(last_crdh[i]->Day, last_crdh[i]->Hour);
+		}
 	}
 	else printf("Cannot find data\n");
 }
@@ -466,6 +465,21 @@ void printCRDH(){
 	}
 	printf("\n");
 
+}
+
+void printDH(){
+	printf("Day     Hour\n");
+		for(int i=0; i<197; i++){
+		TUPLELIST_DH dh = TABLE_DH[i];
+		if(dh == NULL) continue;
+		else{
+			while(dh != NULL){
+				toString_DH(dh);
+				dh = dh->next;
+			}
+		}
+	}
+	printf("\n");
 }
 
 void toString_S(TUPLELIST_S s){

@@ -19,11 +19,11 @@ void query1(){
 	printf("Proccessing... \n");
 	int valid = lookup_SNAP("*",Name,"*","*");
 	if(valid){
-		for(int i=0; i<5; i++){
+		for(int i=0; i<20; i++){
 		if(last_snap[i] != NULL) valid = lookup_CSG(Course, last_snap[i]->StudentId, "*");
 		}
 		if(valid){
-			for(int i=0; i<5;i++){
+			for(int i=0; i<20;i++){
 			if(last_csg[i] != NULL) printf("\nResult:\n%s got grade %s in %s\n",Name,last_csg[i]->Grade,Course);
 		}
 		}
@@ -51,11 +51,11 @@ void query2(){
 	printf("Proccessing... \n");
 	int valid = lookup_SNAP("*",Name,"*","*");
 	if(valid){
-		for(int i=0; i<5; i++){
+		for(int i=0; i<20; i++){
 			if(last_snap[i] != NULL){
 			valid = lookup_CSG("*",last_snap[i]->StudentId, "*");
 			if(valid){
-				for(int k=0; k<5; k++){
+				for(int k=0; k<20; k++){
 				if(last_csg[k] != NULL) valid = lookup_CDH(last_csg[k]->Course, Day, Hour);
 			}
 			}
