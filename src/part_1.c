@@ -117,6 +117,9 @@ TUPLELIST_CDH last_cdh[20];
 TUPLELIST_CR last_cr[20];
 int j = 0;
 
+void printToFile();
+void ReadFromFile();
+
 void insert_CSG(char * Course, char * StudentId, char * Grade){
 	//Make csg struct and insert if not already there
 	int present = lookup_CSG(Course, StudentId, Grade);
@@ -997,4 +1000,101 @@ void printCR(){
 		}
 	}
 	printf("\n");
+}
+
+void printToFile()
+{
+	FILE * fp;
+	fp = fopen("database.txt", "w");
+	fp = fopen("database.txt", "a");
+
+	
+	// print CSG to file
+	fprintf(fp,"Course     StudentId      Grade\n");
+		for(int i=0; i<197; i++){
+		TUPLELIST_CSG csg = TABLE_CSG[i];
+		if(csg == NULL) continue;
+		else{
+			while(csg != NULL){
+				fprintf(fp,"%s      %s          %s  \n", csg->Course, csg->StudentId, csg->Grade);
+				csg = csg->next;
+			}
+		}
+	}
+	fprintf(fp,"\n");
+	
+	// print SNAP to file
+	fprintf(fp, "StudentId            Name                  Address              Phone\n");
+		for(int i=0; i<197; i++){
+		TUPLELIST_SNAP snap = TABLE_SNAP[i];
+		if(snap == NULL) continue;
+		else{
+			while(snap != NULL){
+				fprintf(fp,"%-20s %-20s %-20s %-20s  \n", snap->StudentId, snap->Name, snap->Address, snap->Phone);
+				snap = snap->next;
+			}
+		}
+	}
+	fprintf(fp,"\n");
+	
+	// print CP to file
+	fprintf(fp,"Course      Prerequisite\n");
+		for(int i=0; i<197; i++){
+		TUPLELIST_CP cp = TABLE_CP[i];
+		if(cp == NULL) continue;
+		else{
+			while(cp != NULL){
+				fprintf(fp,"%s       %s\n", cp->Course, cp->Prerequisite);
+				cp = cp->next;
+			}
+		}
+	}
+	fprintf(fp,"\n");
+	
+	
+	// print CDH to file
+	fprintf(fp,"Course   Day  Hour\n");
+		for(int i=0; i<197; i++){
+		TUPLELIST_CDH cdh = TABLE_CDH[i];
+		if(cdh == NULL) continue;
+		else{
+			while(cdh != NULL){
+				fprintf(fp,"%-8s %-4s %-4s\n", cdh->Course, cdh->Day, cdh->Hour);
+				cdh = cdh->next;
+			}
+		}
+	}
+	fprintf(fp,"\n");
+	
+	
+	// print CR to file
+	fprintf(fp,"Course      Room\n");
+		for(int i=0; i<197; i++){
+		TUPLELIST_CR cr = TABLE_CR[i];
+		if(cr == NULL) continue;
+		else{
+			while(cr != NULL){
+				fprintf(fp,"%s       %s\n", cr->Course, cr->Room);
+				cr = cr->next;
+			}
+		}
+	}
+	fprintf(fp,"\n");
+	
+	fclose(fp);
+}
+
+void ReadFromFile()
+{
+	FILE * fp;
+	fp = fopen("database.txt", "r");
+	char singleLine[150];
+
+	while(!feof(fp))
+	{
+		fgets(singleLine, 150, fp);
+		printf(singleLine);
+	}
+
+	fclose(fp);
 }

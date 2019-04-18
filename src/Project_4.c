@@ -50,9 +50,12 @@ int main(void) {
 
 	printf("DEMONSTRATING READ/WRITE TO FILE: \n");
 	printf("\n\nWriting current database to file: database.txt\n");
-	printf("Clearing the database (see source code reinitialization of tables) \n");
-	printf("READING FROM SAME DATABASE FILE:\nBELOW IS THE READ DATABASE: \n\n");
+	printToFile();
+	printf("\nPrinted to file. Check src directory\n");
 
+	printf("Reading from database:\n\n");
+	ReadFromFile();
+	printf("Completed read from file\n\n");
 	printf("---------- RE-INSERTING EVERYTHING-------\nProcessing...\n");
 	insertALL(); //Reinsert all for next Parts
 	printf("\n---------RE-INSERTION COMPLETE---------\n\n");
